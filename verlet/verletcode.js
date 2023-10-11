@@ -14,9 +14,6 @@ var cY = canvas.height
 
 var gravity = new Vector2(0,500)
 
-var msteps = 1000
-var steps = 0
-
 var substeps = 2
 
 var dt = 1/60
@@ -36,19 +33,16 @@ summonBalls(100)
 var constraintBall = new Ball(200,new Vector2(cW/2,cY/2))
 
 function update(){
-    if(steps<msteps){
-        steps += 1
-        ctx.clearRect(0,0,cW,cY)
-        constraintBall.obj.add()
-        for (var i=0;i<balls.length;i++){
-            for (var j=0;j<substeps;j++){
-              balls[i].addForce(gravity)
-              balls[i].collisionDetect(constraintBall)
-              balls[i].objCollisions(balls)
-              balls[i].updatePosition(1/(60*substeps))
-            }
-            balls[i].obj.add()
+    ctx.clearRect(0,0,cW,cY)
+    constraintBall.obj.add()
+    for (var i=0;i<balls.length;i++){
+        for (var j=0;j<substeps;j++){
+          balls[i].addForce(gravity)
+          balls[i].collisionDetect(constraintBall)
+          balls[i].objCollisions(balls)
+          balls[i].updatePosition(1/(60*substeps))
         }
+        balls[i].obj.add()
     }
 }
 
