@@ -1,16 +1,22 @@
 import * as three from 'three'
+import {OBJLoader} from 'three/addons/loaders/OBJLoader.js'
 
 const width = window.innerWidth
 const height = window.innerHeight
 
-// loader
-const imgLoader = new three.TextureLoader()
-const texture = imgLoader.load('/IMG_Container/CharcoalShape.png')
-texture.colorSpace = three.SRGBColorSpace
-
 // scene
 const scene = new three.Scene()
 scene.background = new three.Color(0x262626)
+
+// loader
+const imgLoader = new three.TextureLoader()
+const texture = imgLoader.load('./IMG_Container/CharcoalShape.png')
+texture.colorSpace = three.SRGBColorSpace
+
+const objloader = new OBJLoader()
+objloader.load('./OBJ_Container/spotTheCow.obj', (root) => {
+    scene.add(root)
+})
 
 // renderer
 const renderer = new three.WebGLRenderer()
@@ -42,25 +48,25 @@ directional.castShadow = true
 scene.add(directional)
 
 // cube
-const bGeom = new three.BoxGeometry(-2,-2,-2)
-const bMat = new three.MeshPhongMaterial({
-    color: 0xaaaaaa,
-    // map: texture,
-    flatShading: true,
-})
-const cube = new three.Mesh(bGeom, bMat)
-cube.recieveShadow = true
-scene.add(cube)
+// const bGeom = new three.BoxGeometry(-2,-2,-2)
+// const bMat = new three.MeshPhongMaterial({
+//     // color: 0xaaaaaa,
+//     map: texture,
+//     flatShading: true,
+// })
+// const cube = new three.Mesh(bGeom, bMat)
+// cube.recieveShadow = true
+// scene.add(cube)
 
-// sphere
-const sGeom = new three.OctahedronGeometry(1,3)
-const sMat = new three.MeshPhongMaterial({
-    color: 0xffffff,
-    flatShading: true,
-})
-const sphere = new three.Mesh(sGeom, sMat)
-sphere.castShadow = true
-scene.add(sphere)
+// // sphere
+// const sGeom = new three.OctahedronGeometry(1,3)
+// const sMat = new three.MeshPhongMaterial({
+//     color: 0xffffff,
+//     flatShading: true,
+// })
+// const sphere = new three.Mesh(sGeom, sMat)
+// sphere.castShadow = true
+// scene.add(sphere)
 
 
 // rendering the scene
