@@ -1,17 +1,19 @@
+import * as three from 'three'
+
 const width = window.innerWidth
 const height = window.innerHeight
 
 // loader
-const imgLoader = new THREE.TextureLoader()
+const imgLoader = new three.TextureLoader()
 const texture = imgLoader.load('/IMG_Container/CharcoalShape.png')
-texture.colorSpace = THREE.SRGBColorSpace
+texture.colorSpace = three.SRGBColorSpace
 
 // scene
-const scene = new THREE.Scene()
-scene.background = new THREE.Color(0x262626)
+const scene = new three.Scene()
+scene.background = new three.Color(0x262626)
 
 // renderer
-const renderer = new THREE.WebGL1Renderer()
+const renderer = new three.WebGLRenderer()
 renderer.setSize(width, height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
@@ -21,17 +23,17 @@ renderer.shadowMap.enabled = true
 const wScaled = width
 const hScaled = height
 
-const camera = new THREE.OrthographicCamera(-wScaled, wScaled, hScaled, -hScaled, 0.1, 1000)
+const camera = new three.OrthographicCamera(-wScaled, wScaled, hScaled, -hScaled, 0.1, 1000)
 camera.zoom = 3
 
 camera.position.set(10, 10, 10)
 camera.lookAt(0,0,0)
 
 // light
-const ambient = new THREE.HemisphereLight(0xaaaaff,0xeeaaee,1)
+const ambient = new three.HemisphereLight(0xaaaaff,0xeeaaee,1)
 scene.add(ambient)
 
-const directional = new THREE.DirectionalLight(0xeeddaa,0.5)
+const directional = new three.DirectionalLight(0xeeddaa,0.5)
 directional.castShadow = true
 
 // directional.position.set(-10,6,0)
@@ -40,23 +42,23 @@ directional.castShadow = true
 scene.add(directional)
 
 // cube
-const bGeom = new THREE.BoxGeometry(-2,-2,-2)
-const bMat = new THREE.MeshPhongMaterial({
+const bGeom = new three.BoxGeometry(-2,-2,-2)
+const bMat = new three.MeshPhongMaterial({
     color: 0xaaaaaa,
     // map: texture,
     flatShading: true,
 })
-const cube = new THREE.Mesh(bGeom, bMat)
+const cube = new three.Mesh(bGeom, bMat)
 cube.recieveShadow = true
 scene.add(cube)
 
 // sphere
-const sGeom = new THREE.OctahedronGeometry(1,3)
-const sMat = new THREE.MeshPhongMaterial({
+const sGeom = new three.OctahedronGeometry(1,3)
+const sMat = new three.MeshPhongMaterial({
     color: 0xffffff,
     flatShading: true,
 })
-const sphere = new THREE.Mesh(sGeom, sMat)
+const sphere = new three.Mesh(sGeom, sMat)
 sphere.castShadow = true
 scene.add(sphere)
 
