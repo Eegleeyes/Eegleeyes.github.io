@@ -11,7 +11,7 @@
         html,
         body {
             height: 100vh;
-            overflow-x: clip;
+            overflow: clip;
             width: 100vw;
         }
 
@@ -48,7 +48,7 @@
         .pulser {
             border-style: solid;
             border-radius: 50%;
-            border-width: 10px;
+            border-width: 100%;
             border-color: white;
 
             position: absolute;
@@ -112,7 +112,11 @@
         }
 
         #move-left-hover-space:hover button {
-            translate: 105%;
+            translate: 110%;
+        }
+
+        #move-left-hover-space button:hover {
+            transform: scale(110%);
         }
 
         #move-right-hover-space {
@@ -124,7 +128,11 @@
         }
 
         #move-right-hover-space:hover button {
-            translate: -105%;
+            translate: -110%;
+        }
+
+        #move-right-hover-space button:hover {
+            transform: scale(110%);
         }
 
         #room-title {
@@ -137,6 +145,108 @@
             color: white;
             font-family:'Times New Roman', Times, serif;
             font-size: 250%;
+        }
+
+        #overlay {
+            visibility: hidden;
+
+            width: 100%;
+            height: 100%;
+
+            position:absolute;
+
+            overflow: clip;
+
+            top:0px;
+            left:0px;
+        }
+
+        #art-information {
+            max-width: 400px;
+
+            width:auto;
+            height: 100%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            position:absolute; 
+
+            color: white;
+
+            bottom:0%;
+            left:0%;
+
+            padding: 2% 2% 5% 2%;
+
+            background: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0));
+        }
+
+        #art-information h1 {
+            font-family:'Times New Roman', Times, serif;
+            text-decoration: underline;
+
+            width: auto;
+
+            margin: 0% 0% 5% 5%;
+        }
+
+        #art-information p {
+            max-width: 400px;
+
+            width:auto;
+            height: auto;
+
+            margin: 1%;
+        }
+
+        #art-thumbnail {
+            display: flex;
+            justify-content: center;
+            align-items: center;   
+            height: 100vh;
+
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        #art-thumbnail img {
+            width:auto;
+            height:auto;
+
+            max-width:100%;
+            max-height:100%;
+        }
+
+        #close-art-information {
+            position: absolute;
+
+            top: 0%;
+            left: 0%;
+
+            width: 100%;
+            height: 10%;
+
+            display: flex;
+            justify-content: center;
+        }
+
+        #close-art-information button {
+            position: absolute;
+
+            top: -200px;
+        }
+
+        #close-art-information:hover button {
+            translate: 0% 110%;
+        }
+
+        #close-art-information button:hover {
+            transform: scale(110%);
+        }
+
+        #close-art-information:hover .pulser {
+            animation: pulse 1s infinite;
         }
 
         @keyframes pulse {
@@ -154,6 +264,10 @@
             <canvas id="threejs-canvas"></canvas>
             <div class="selection-space">
                 <h1 class="unselectable" id="room-title">The Bestworks</h1>
+
+                <button class="circle" style="visibility: hidden; background-color: unset; width: 30px; height: 30px;">
+                    <div class="pulser"></div>
+                </button>
             </div>
 
             <div class="hover-space" id="move-left-hover-space">
@@ -170,11 +284,27 @@
 
                 </button>
             </div>
+            <div id="overlay">
+                <div id="art-information">
+                    <div>
+                        <h1>TITLE GOES HERE</h1>
+                        <p>
+                            Some random description. This is a real description, beautiful in its descriptiveness. 
+                            I often wonder how such a good description can be made. But now I know, I can see it, and it's wonderful.
+                        </p>
+                    </div>
+                </div>
+                <div id="art-thumbnail">
+                    <img src="./IMG_Container/CloudOverMountain.PNG">
+                </div>
+                <div id="close-art-information">
+                    <button class="circle">
+                        <h3>Return</h3>
+                        <div class="pulser"></div>
+                    </button>
+                </div>
+            </div>
         </div>
-    </div>
-
-    <div>
-        <p>Hello World!</p>
     </div>
     <script type="importmap">
         {

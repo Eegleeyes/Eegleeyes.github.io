@@ -18,15 +18,90 @@ const selectionSpace = document.querySelector('.selection-space')
 const roomTitle = document.querySelector('#room-title')
 const roomTitleText = roomTitle //document.querySelector('#room-title u')
 
-// misc
+const artExpansionButton = document.querySelector('.circle')
+const artExpansionButtonStyling = 'background-color: unset; width: 30px; height: 30px;'
 
-const scrollInAnim = [
-    {transform: 'translateY(100%)', opacity: '0%'},
-    {transform: 'translateY(0%)', opacity: '100%'}
-]
-const scrollInAnimSpecs = {
-    duration: 1500,
-    iterations: 1,
+const artExpansionButtons = []
+
+const overlay = document.querySelector('#overlay')
+const artInfoTextContainer = document.querySelector('#art-information')
+const artInfoTitle = document.querySelector('#art-information div h1')
+const artInfoText = document.querySelector('#art-information div p')
+const artImage = document.querySelector('#art-thumbnail img')
+
+const artReturnButton = document.querySelector('#close-art-information button')
+
+// misc
+const artInformation = {
+    "CharcoalShape": {
+        imgURL: './IMG_Container/CharcoalShape.png',
+        descHTML:`
+        This is a test image, nothing more, nothing less. You aren't supposed to be able to see this.
+        `,
+        bright: false
+    },
+    "In For The Long Haul": {
+        imgURL: './IMG_Container/CloudStudy.PNG',
+        descHTML:`
+        A 6-8 hour study of a cloud completed on a roadtrip. 
+        The shadows were especially hard to execute, and ended up with me doing a lot of back-and-forth, but was well worth the result.
+        <br><br>Digital
+        `,
+        bright: false
+    },
+    "Colors Found Underneath": {
+        imgURL: './IMG_Container/FauvistMountain.PNG',
+        descHTML:`
+        A fauvist painting of the Matterhorn. The bright colors and reflection in the water make for quite an entrancing piece.
+        <br><br>Digital
+        `,
+        bright: false
+    },
+    "Covered, Hidden": {
+        imgURL: './IMG_Container/FrogFountain.PNG',
+        descHTML:`
+        A pointalist-impressionist painting of an overgrown fountain sporting a stack of 3 stone frogs.
+        Inspired from a conversation with my mother, in which she exclaimed her desire for a real life frog fountain.
+        <br><br>Digital
+        `,
+        bright: false
+    },
+    "Shape of a Frogger": {
+        imgURL: './IMG_Container/FrogPhoneBackground.PNG',
+        descHTML:`
+        A pointalist-impressionist painting of a frog on a lilypad. 
+        Fun fact: I use this as my phone background!
+        <br><br>Digital
+        `,
+        bright: false
+    },
+    "Skull of the Inverse":{
+        imgURL: './IMG_Container/BlackSkull.PNG',
+        descHTML:`
+        Getting bored of regular observational drawing, I decided to challenge myself.
+        Instead of drawing black-on-white, I would do the opposite. The result is this image.
+        <br><br>Digital
+        `,
+        bright: false
+    },
+    "Eye see you!":{
+        imgURL: './IMG_Container/Eye.PNG',
+        descHTML:`
+        The classic eye, a start to every portrait unit as well as just something fun to draw. 
+        This eye, however, is rather exceptional due to the detailed pupil.
+        <br><br>Digital
+        `,
+        bright: true
+    },
+    "A Fresh Take":{
+        imgURL: './IMG_Container/Mountain1.PNG',
+        descHTML:`
+        This rather Bob Ross inspired drawing is when I first started to explore landscapes in more depth. 
+        Previously, I had only been doing object drawing and was getting rather fatigued, so I set my sights on something new, something grand.
+        <br><br>Digital
+        `,
+        bright: true
+    },
 }
 
 const sceneKeys = Object.keys(scenes)
@@ -89,7 +164,80 @@ function worldToScreen(x=0,y=0,z=0){
     return new three.Vector2(sx,sy)
 }
 
-function setupCurrentScene(){
+async function loadImg(url, imgElement){
+    return new Promise((resolve, reject) => {
+        imgElement.onload = () => resolve(imgElement);
+        imgElement.onerror = reject;
+        imgElement.src = url;
+    });
+} 
+
+function showArtInformation(artName){
+    disableArtButtons()
+
+    let artInfo = artInformation[artName]
+
+    artInfoTextContainer.style.color = artInfo.bright ? 'black' : 'white'
+
+    artInfoTitle.innerHTML = artName
+    artInfoText.innerHTML = artInfo.descHTML
+
+    // artImage.src = artInfo.imgURL
+
+    loadImg(artInfo.imgURL,artImage).then(()=>{
+        animate(overlay, {
+            keyframes: {
+                0:{top:'100%'},
+                100:{top:'0%'},
+            },
+
+            duration: 1000,
+            ease:'outCubic'
+        })
+
+        overlay.style.visibility = 'visible'
+    })
+}
+
+function hideArtInformation(){
+    animate(overlay, {
+        keyframes: {
+            0:{top:'0%'},
+            100:{top:'100%'},
+        },
+
+        duration: 1000,
+        ease:'outCubic',
+
+        onComplete: () => {
+            enableArtButtons()
+            overlay.style.visibility = 'hidden'
+        }
+    })
+}
+
+
+function disableArtButtons(){
+    for (let button of artExpansionButtons){
+        button.disabled = true
+    }
+}
+
+function enableArtButtons(){
+    for (let button of artExpansionButtons){
+        button.disabled = false
+    }
+}
+
+function cleanupForTransition(){
+    for (let button of artExpansionButtons){
+        button.remove()
+        //button.removeEventListener('click')
+    }
+    artExpansionButtons.length = 0
+}
+
+function setupArtButtonsInCurrentScene(){
     let artWorks = scenes[sceneKeys[currentScene]].getObjectsByProperty('userData',artTag)
 
     for (let art in artWorks){
@@ -98,12 +246,17 @@ function setupCurrentScene(){
         let screenpos = worldToScreen(pos.x,pos.y,pos.z)
 
         let selectionSpaceRect = selectionSpace.getBoundingClientRect()
-        console.log(selectionSpaceRect)
 
-        let domElement = document.createElement('p')
-        domElement.innerHTML = '@'
-        let style = `position:absolute; top:calc(${screenpos.y*height}px + ${selectionSpaceRect.top}px); left:calc(${screenpos.x*width}px - ${selectionSpaceRect.left}px);`
-        domElement.style = style
+        let domElement = artExpansionButton.cloneNode(true)
+        let style = `position:absolute; top:calc(${screenpos.y*height}px + ${selectionSpaceRect.top-15}px); left:calc(${screenpos.x*width}px - ${selectionSpaceRect.left+15}px);`
+
+        domElement.style = style + artExpansionButtonStyling
+
+        artExpansionButtons.push(domElement)
+
+        domElement.addEventListener('click', () => {
+            showArtInformation(art.name)
+        })
 
         selectionSpace.appendChild(domElement)
     }
@@ -207,7 +360,7 @@ for (let i=0; i<15; i++){
     let circle2 = new three.Mesh(cGeom,cMat)
     circle2.lookAt(camera.position)
 
-    pos = screenToWorld(-1,-1)
+    pos = screenToWorld(2,-1)
     circle2.position.set(pos.x,pos.y,pos.z)
 
     animate(circle2.scale, animSettings)
@@ -376,7 +529,7 @@ function leftButtonClick(){
             })
 
             hideAllButCurrentScene()
-            setupCurrentScene()
+            cleanupForTransition()
 
             scenes[sceneKeys[currentScene]].rotation.y = Math.PI
             animate(scenes[sceneKeys[currentScene]].rotation,{
@@ -384,6 +537,8 @@ function leftButtonClick(){
 
                 ease:'outCubic',
                 duration: 500,
+
+                onComplete: ()=>{setupArtButtonsInCurrentScene()}
             })
 
             leftButtonText.innerHTML = sceneKeys[wrapIndex(currentScene-1,sceneKeys.length)]
@@ -448,7 +603,7 @@ function rightButtonClick(){
             })
 
             hideAllButCurrentScene()
-            setupCurrentScene()
+            cleanupForTransition()
 
             scenes[sceneKeys[currentScene]].rotation.y = -Math.PI
             animate(scenes[sceneKeys[currentScene]].rotation,{
@@ -456,6 +611,8 @@ function rightButtonClick(){
 
                 ease:'outCubic',
                 duration: 500,
+
+                onComplete: ()=>{setupArtButtonsInCurrentScene()}
             })
 
             leftButtonText.innerHTML = sceneKeys[wrapIndex(currentScene-1,sceneKeys.length)]
@@ -477,6 +634,8 @@ rightHoverZone.addEventListener('mouseleave',mouseoutRight)
 leftButton.addEventListener('click',leftButtonClick)
 rightButton.addEventListener('click',rightButtonClick)
 
+artReturnButton.addEventListener('click',hideArtInformation)
+
 // rendering the scene
 canvas.style.width = "100%"
 canvas.style.height = "100%"
@@ -496,6 +655,8 @@ animate('#room-title',{
 
     ease:'outCubic',
 })
+
+setupArtButtonsInCurrentScene()
 
 function renderLoop(){
     width = canvas.clientWidth
