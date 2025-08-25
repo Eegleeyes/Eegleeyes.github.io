@@ -17,6 +17,7 @@ const selectionSpace = document.querySelector('.selection-space')
 
 const roomTitle = document.querySelector('#room-title')
 const roomTitleText = roomTitle //document.querySelector('#room-title u')
+roomTitle.style.visibility = "hidden"
 
 const artExpansionButton = document.querySelector('.circle')
 const artExpansionButtonStyling = 'background-color: unset; width: 30px; height: 30px;'
@@ -30,6 +31,10 @@ const artInfoText = document.querySelector('#art-information div p')
 const artImage = document.querySelector('#art-thumbnail img')
 
 const artReturnButton = document.querySelector('#close-art-information button')
+
+const loadingdiv = document.querySelector("#loading-screen")
+const loadingCircle = document.querySelector('#loading-screen .circle')
+const loadingText = document.querySelector('#loading-screen h1')
 
 // misc
 const artInformation = {
@@ -84,7 +89,7 @@ const artInformation = {
         `,
         bright: false
     },
-    "Eye see you!":{
+    "Eye See You!":{
         imgURL: './IMG_Container/Eye.PNG',
         descHTML:`
         The classic eye, a start to every portrait unit as well as just something fun to draw. 
@@ -98,6 +103,32 @@ const artInformation = {
         descHTML:`
         This rather Bob Ross inspired drawing is when I first started to explore landscapes in more depth. 
         Previously, I had only been doing object drawing and was getting rather fatigued, so I set my sights on something new, something grand.
+        <br><br>Digital
+        `,
+        bright: true
+    },
+    "Of Barcelona":{
+        imgURL: './IMG_Container/Corridor.JPG',
+        descHTML:`
+        On my first trip overseas, I went to Barcelona. And besides the large walkways, coastline, tapas, and history, I was deeply captivated by the thin, bustling streets.
+        Once I returned home, I was displeased to find no good reference, but perservered and drew one from my imagination. 
+        <br><br>Digital
+        `,
+        bright: false
+    },
+    "Scenic Creek":{
+        imgURL: './IMG_Container/Mountain2.PNG',
+        descHTML:`
+        This drawing comes from the same roadtrip as <i>In For The Long Haul</i> does. 
+        I really like the mountain here, as well as the trees, and the creek... I just like this piece!
+        <br><br>Digital
+        `,
+        bright: false
+    },
+    "Calm Before The Storm":{
+        imgURL: './IMG_Container/CloudOverMountain.PNG',
+        descHTML:`
+        Clouds had vexed me to this point, as such, I decided to do a piece with a cloud as the focus. A simple mountain range and field frame the cloud quite nicely.
         <br><br>Digital
         `,
         bright: true
@@ -177,7 +208,15 @@ function showArtInformation(artName){
 
     let artInfo = artInformation[artName]
 
-    artInfoTextContainer.style.color = artInfo.bright ? 'black' : 'white'
+    if (artInfo.bright){
+        overlay.style.background = 'rgba(255, 255, 255, 0.5)'
+        artInfoTextContainer.style.color = 'black' 
+        artInfoTextContainer.style.background = 'linear-gradient(to right, rgba(255,255,255,0.5), rgba(255,255,255,0))'
+    }else{
+        overlay.style.background = 'rgba(0,0,0,0.5)'
+        artInfoTextContainer.style.color = 'white'
+        artInfoTextContainer.style.background = 'linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0))'
+    }
 
     artInfoTitle.innerHTML = artName
     artInfoText.innerHTML = artInfo.descHTML
@@ -621,7 +660,10 @@ function rightButtonClick(){
     })
 }
 
-console.log(scenes['The Draftroom'].getObjectsByProperty("userData",artTag))
+function windowResize(){
+    cleanupForTransition()
+    setupArtButtonsInCurrentScene()
+}
 
 // event connections
 
@@ -636,6 +678,8 @@ rightButton.addEventListener('click',rightButtonClick)
 
 artReturnButton.addEventListener('click',hideArtInformation)
 
+window.addEventListener('resize',windowResize)
+
 // rendering the scene
 canvas.style.width = "100%"
 canvas.style.height = "100%"
@@ -646,17 +690,6 @@ for (let i=0; i<sceneKeys.length; i++){
     }
     scene.add(scenes[sceneKeys[i]])
 }
-
-animate('#room-title',{
-    keyframes:{
-        '0%': {transform: 'translateY(0%)', opacity: '0%', backgroundSize: '0% .1em'},
-        '100%': {transform: 'translateY(100%)', opacity: '100%', backgroundSize: '100% .1em'}
-    },
-
-    ease:'outCubic',
-})
-
-setupArtButtonsInCurrentScene()
 
 function renderLoop(){
     width = canvas.clientWidth
@@ -681,9 +714,47 @@ function renderLoop(){
     renderer.render(scene, camera)
 }
 
-renderer.setAnimationLoop(renderLoop)
+function init(){
+    roomTitle.style.visibility = "visible"
+    animate('#room-title',{
+        keyframes:{
+            '0%': {transform: 'translateY(0%)', opacity: '0%', backgroundSize: '0% .1em', visible:true},
+            '100%': {transform: 'translateY(100%)', opacity: '100%', backgroundSize: '100% .1em'}
+        },
 
+        ease:'outCubic',
+    })
 
+    setupArtButtonsInCurrentScene()
+
+    
+}
+
+export function dropLoadingScreen(){
+    renderer.setAnimationLoop(renderLoop)
+    animate(loadingText, {
+        transform:'translateY(-55vh)',
+
+        duration:1000,
+
+        ease:'inCubic',
+
+        onComplete: ()=>{
+            init()
+        
+            animate(loadingCircle, {
+                transform:'scale(0%)',
+                
+                duration:3000,
+
+                ease:'outCubic',
+
+                onComplete: ()=>{loadingText.style.visibility = 'hidden'; loadingdiv.style.visibility = 'hidden'}
+            })
+        }
+    })
+    
+}
 
 
 

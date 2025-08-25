@@ -249,6 +249,33 @@
             animation: pulse 1s infinite;
         }
 
+        #loading-screen {
+            width: 100%;
+            height: 100%;
+
+            position: absolute;
+
+            top: 0%;
+            left: 0%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #loading-screen .circle {
+            position: absolute;
+
+            width:max(141vw,141vh);
+            height:max(141vw,141vh);
+        }
+
+        #loading-screen h1 {
+            position: absolute;
+
+            text-align: center;
+        }
+
         @keyframes pulse {
             from {transform: scale(1); opacity: 100%;}
             to {transform: scale(1.4); opacity: 0%;}
@@ -303,6 +330,10 @@
                         <div class="pulser"></div>
                     </button>
                 </div>
+            </div>
+            <div id="loading-screen">
+                <div class="circle"></div>
+                <h1 class="unselectable">Please wait</h1>
             </div>
         </div>
     </div>

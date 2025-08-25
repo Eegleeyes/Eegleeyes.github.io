@@ -1,5 +1,7 @@
 import * as three from 'three'
 import {OBJLoader} from 'three/addons/loaders/OBJLoader.js'
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import { dropLoadingScreen } from './controller.js'
 
 // storage of all scenes
 export const artTag = {isArt:true}
@@ -11,138 +13,104 @@ let bedroom = new three.Group()
 // loaders
 const imgLoader = new three.TextureLoader()
 
-let imagesLoaded = 0
+let scenesLoaded = 0
 
-const masterworks_charcoal = imgLoader.load('./IMG_Container/CharcoalShape.png',(texture)=>{texture.colorSpace = three.SRGBColorSpace; imagesLoaded++})
+function sceneLoaded(){
+    scenesLoaded++
 
-const masterworks_cloud = imgLoader.load('./IMG_Container/CloudStudy.PNG',(texture)=>{texture.colorSpace = three.SRGBColorSpace; imagesLoaded++})
-const masterworks_frogFountain = imgLoader.load('./IMG_Container/FrogFountain.PNG',(texture)=>{texture.colorSpace = three.SRGBColorSpace; imagesLoaded++})
-const masterworks_frogPhone = imgLoader.load('./IMG_Container/FrogPhoneBackground.PNG',(texture)=>{texture.colorSpace = three.SRGBColorSpace; imagesLoaded++})
-const masterworks_fauvistMountain = imgLoader.load('./IMG_Container/FauvistMountain.PNG',(texture)=>{texture.colorSpace = three.SRGBColorSpace; imagesLoaded++})
+    console.log(scenesLoaded)
+    if (scenesLoaded >= 2){
+        dropLoadingScreen()
+    }
+}
 
-const draftroom_skull = imgLoader.load('./IMG_Container/BlackSkull.PNG',(texture)=>{texture.colorSpace = three.SRGBColorSpace; imagesLoaded++})
-const draftroom_eye = imgLoader.load('./IMG_Container/Eye.PNG',(texture)=>{texture.colorSpace = three.SRGBColorSpace; imagesLoaded++})
-const draftroom_mountain1 = imgLoader.load('./IMG_Container/Mountain1.PNG',(texture)=>{texture.colorSpace = three.SRGBColorSpace; imagesLoaded++})
-const draftroom_mountain2 = imgLoader.load('./IMG_Container/Mountain2.PNG',(texture)=>{texture.colorSpace = three.SRGBColorSpace; imagesLoaded++})
-const draftroom_corridor = imgLoader.load('./IMG_Container/Corridor.JPG',(texture)=>{texture.colorSpace = three.SRGBColorSpace; imagesLoaded++})
-
+const masterworks_charcoal = imgLoader.load('./IMG_Container/CharcoalShape.png',(texture)=>{texture.colorSpace = three.SRGBColorSpace})
 
 const objloader = new OBJLoader()
+const gltfloader = new GLTFLoader()
+
+gltfloader.load('./OBJ_Container/Bestworks.glb', (res) => {
+    for (let child of res.scene.children){
+        child.castShadow = true
+        child.recieveShadow = true
+
+        let splitName = child.name.split("_",1)
+        if (splitName[0] == "art"){
+            child.userData = artTag
+            child.name = child.name.substring(4).replaceAll("_"," ")
+        }
+    }
+
+    masterworks.add(res.scene)
+    sceneLoaded()
+}, undefined, (err) => {
+    console.log(err)
+})
+
+gltfloader.load('./OBJ_Container/Draftroom.glb', (res) => {
+    for (let child of res.scene.children){
+        child.castShadow = true
+        child.recieveShadow = true
+
+        let splitName = child.name.split("_",1)
+        if (splitName[0] == "art"){
+            child.userData = artTag
+            child.name = child.name.substring(4).replaceAll("_"," ")
+        }
+    }
+
+    draftroom.add(res.scene)
+    sceneLoaded()
+}, undefined, (err) => {
+    console.log(err)
+})
 
 //////// Masterwork room setup ////////
 
-// lighting
-const directional = new three.DirectionalLight(0xeeddaa,0.5)
-directional.castShadow = true
+let directional = new three.DirectionalLight(null,3)
+directional.target.position.set(-2,-10,-5)
 
-directional.position.set(10,6,0)
-directional.target.position.set(-10,0,0)
-
+masterworks.add(directional.target)
 masterworks.add(directional)
 
-// cube 
-let bGeom = new three.BoxGeometry(-5,-5,-5)
-let bMat = new three.MeshPhongMaterial({
-    color: 0xffffff,
-    flatShading: true,
-})
-let cube = new three.Mesh(bGeom, bMat)
-cube.recieveShadow = true
-masterworks.add(cube)
+let spot = new three.SpotLight(null,10,4,Math.PI/8)
+spot.position.set(-1.77,1.86,0.85)
+spot.target.position.set(-2.43,0,0.85)
 
-// Cloud
-let pGeom = new three.PlaneGeometry(2,1.5)
-let pMat  = new three.MeshBasicMaterial({
-    map:masterworks_cloud,
-})
-let plane = new three.Mesh(pGeom,pMat)
-plane.name = "In For The Long Haul"
-plane.userData = artTag
-plane.position.set(-0.6,1,-2.49)
-masterworks.add(plane)
+masterworks.add(spot.target)
+masterworks.add(spot)
 
-// Fauvist
-pMat  = new three.MeshBasicMaterial({
-    map:masterworks_fauvistMountain,
-})
-plane = new three.Mesh(pGeom,pMat)
-plane.name = "Colors Found Underneath"
-plane.userData = artTag
-plane.position.set(0.4,-0.8,-2.49)
-masterworks.add(plane)
+spot = new three.SpotLight(null,10,4,Math.PI/8)
+spot.position.set(-1.77,1.86,-1.4)
+spot.target.position.set(-2.43,0,-1.4)
 
-// Fountain
-pMat  = new three.MeshBasicMaterial({
-    map:masterworks_frogFountain,
-})
-plane = new three.Mesh(pGeom,pMat)
-plane.name = "Covered, Hidden"
-plane.userData = artTag
-plane.position.set(-2.49,0,0.9)
-plane.rotateY(Math.PI*0.5)
-masterworks.add(plane)
+masterworks.add(spot.target)
+masterworks.add(spot)
 
-// Phone background
-pGeom = new three.PlaneGeometry(1.12,2)
-pMat  = new three.MeshBasicMaterial({
-    map:masterworks_frogPhone,
-})
-plane = new three.Mesh(pGeom,pMat)
-plane.name = "Shape of a Frogger"
-plane.userData = artTag
-plane.position.set(-2.49,0,-1.4)
-plane.rotateY(Math.PI*0.5)
-masterworks.add(plane)
+spot = new three.SpotLight(null,2,4,Math.PI/4)
+spot.position.set(-0.97,1.86,-1.84)
+spot.target.position.set(-0.97,1.8,-1.9)
 
+masterworks.add(spot.target)
+masterworks.add(spot)
+
+spot = new three.SpotLight(null,10,4,Math.PI/8)
+spot.position.set(1,1.86,-1.84)
+spot.target.position.set(1,-1,-1.87)
+
+masterworks.add(spot.target)
+masterworks.add(spot)
 
 //////// Draftroom room setup ////////
 
-// cube 
-bGeom = new three.BoxGeometry(-5,-5,-5)
-bMat = new three.MeshPhongMaterial({
-    color: 0xaaaaaa,
-    flatShading: true,
-})
-cube = new three.Mesh(bGeom, bMat)
-cube.recieveShadow = true
-draftroom.add(cube)
+let point = new three.PointLight(0xeeddaa, 10)
+point.castShadow = true
 
-// skull
-pGeom = new three.PlaneGeometry(2,1.5)
-pMat  = new three.MeshBasicMaterial({
-    map:draftroom_skull,
-})
-plane = new three.Mesh(pGeom,pMat)
-plane.name = "Skull of the Inverse"
-plane.rotateY(Math.PI * 0.5)
-plane.position.set(-2.49,1,0)
-plane.userData = artTag
-draftroom.add(plane)
+point.position.set(0,2.3,0)
 
-// eye
-pMat  = new three.MeshBasicMaterial({
-    map:draftroom_eye,
-})
-plane = new three.Mesh(pGeom,pMat)
-plane.name = "Eye see you!"
-plane.position.set(0,1,-2.49)
-plane.userData = artTag
-draftroom.add(plane)
-
-// mountain1
-pMat  = new three.MeshBasicMaterial({
-    map:draftroom_mountain1,
-})
-plane = new three.Mesh(pGeom,pMat)
-plane.name = "A Fresh Take"
-plane.position.set(0,3,-2.49)
-plane.userData = artTag
-draftroom.add(plane)
-
+draftroom.add(point)
 
 //////// Bedroom room setup ////////
-
-
 
 ////////////////////////////////////
 
