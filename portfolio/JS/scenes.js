@@ -65,6 +65,42 @@ gltfloader.load('./OBJ_Container/Draftroom.glb', (res) => {
     console.log(err)
 })
 
+gltfloader.load('./OBJ_Container/Bedroom.glb', (res) => {
+    for (let child of res.scene.children){
+        child.castShadow = true
+        child.recieveShadow = true
+
+        let splitName = child.name.split("_",1)
+        if (splitName[0] == "art"){
+            child.userData = artTag
+            let newName = child.name.substring(4).replaceAll("_"," ")
+            switch(newName){
+                case "canyon":
+                    child.name = "Color Theory Chasm"
+                    break
+
+                case "lilypads":
+                    child.name = "Lilypads"
+                    break
+
+                case "portfolio":
+                    child.name = "This Site"
+                    break
+
+                default:
+                    child.name = newName
+                    break
+            }
+            
+        }
+    }
+
+    bedroom.add(res.scene)
+    sceneLoaded()
+}, undefined, (err) => {
+    console.log(err)
+})
+
 //////// Masterwork room setup ////////
 
 let directional = new three.DirectionalLight(null,3)
@@ -111,6 +147,19 @@ point.position.set(0,2.3,0)
 draftroom.add(point)
 
 //////// Bedroom room setup ////////
+
+directional = new three.DirectionalLight(0xFFC79C,5)
+directional.target.position.set(5,-5,0)
+
+bedroom.add(directional.target)
+bedroom.add(directional)
+
+point = new three.PointLight(0xeeeeff, 10)
+point.castShadow = true
+
+point.position.set(1.5,-2.3,1.5)
+
+bedroom.add(point)
 
 ////////////////////////////////////
 

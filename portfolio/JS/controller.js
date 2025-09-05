@@ -120,7 +120,7 @@ const artInformation = {
         imgURL: './IMG_Container/Mountain2.PNG',
         descHTML:`
         This drawing comes from the same roadtrip as <i>In For The Long Haul</i> does. 
-        I really like the mountain here, as well as the trees, and the creek... I just like this piece!
+        I think this embodies what made the other pieces great and expands upon them nicely. To say the least: I like this piece.
         <br><br>Digital
         `,
         bright: false
@@ -132,6 +132,31 @@ const artInformation = {
         <br><br>Digital
         `,
         bright: true
+    },
+    "Color Theory Chasm":{
+        imgURL: './IMG_Container/RedCanyon.PNG',
+        descHTML:`
+        A pointalist-impressionist painting of a canyon. This is an experiment in <i>Color Relativity</i>, no blues or greens were used in this piece, only red.
+        <br><br>Digital
+        `,
+        bright: false
+    },
+    "Lilypads":{
+        imgURL: './IMG_Container/Lilypads.PNG',
+        descHTML:`
+        Just some lilypads. Practice-turned-finished of me trying to smooth out colors instead of doing another pointalist-impressionist piece.
+        <br><br>Digital
+        `,
+        bright: false
+    },
+    "This Site":{
+        imgURL: './IMG_Container/clear.png',
+        descHTML:`
+        I built this website from the ground up, everything you see (apart from the 3D renderer) is made by me. 
+        Assets, transitions, effects, enough to call this an artpiece of its own.
+        <br><br>HTML, JS, CSS
+        `,
+        bright: false
     },
 }
 
@@ -745,9 +770,9 @@ export function dropLoadingScreen(){
             animate(loadingCircle, {
                 transform:'scale(0%)',
                 
-                duration:3000,
+                duration:1000,
 
-                ease:'outCubic',
+                ease:'inCubic',
 
                 onComplete: ()=>{loadingText.style.visibility = 'hidden'; loadingdiv.style.visibility = 'hidden'}
             })
