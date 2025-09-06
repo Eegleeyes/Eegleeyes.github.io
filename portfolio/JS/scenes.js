@@ -19,7 +19,7 @@ function sceneLoaded(){
     scenesLoaded++
 
     console.log(scenesLoaded)
-    if (scenesLoaded >= 2){
+    if (scenesLoaded >= 3){
         dropLoadingScreen()
     }
 }
