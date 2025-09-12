@@ -1,5 +1,4 @@
 import * as three from 'three'
-import {OBJLoader} from 'three/addons/loaders/OBJLoader.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { dropLoadingScreen } from './controller.js'
 
@@ -11,8 +10,6 @@ let draftroom = new three.Group()
 let bedroom = new three.Group()
 
 // loaders
-const imgLoader = new three.TextureLoader()
-
 let scenesLoaded = 0
 
 function sceneLoaded(){
@@ -24,9 +21,6 @@ function sceneLoaded(){
     }
 }
 
-const masterworks_charcoal = imgLoader.load('./IMG_Container/CharcoalShape.png',(texture)=>{texture.colorSpace = three.SRGBColorSpace})
-
-const objloader = new OBJLoader()
 const gltfloader = new GLTFLoader()
 
 gltfloader.load('./OBJ_Container/Bestworks.glb', (res) => {

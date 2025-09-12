@@ -96,7 +96,7 @@ const artInformation = {
         This eye, however, is rather exceptional due to the detailed pupil.
         <br><br>Digital
         `,
-        bright: true
+        bright: false
     },
     "A Fresh Take":{
         imgURL: './IMG_Container/Mountain1.PNG',
