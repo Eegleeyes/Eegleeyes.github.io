@@ -94,6 +94,21 @@
             animation: pulse 1s infinite;
         }
 
+        #ux-pulser-left {
+            scale:1px;
+            animation: big-pulse 1s infinite;
+        }
+
+        #ux-pulser-right {
+            scale:1px;
+            animation: big-pulse 1s infinite;
+        }
+
+        #ux-pulser-close {
+            scale:1px;
+            animation: big-pulse 1s infinite;
+        }
+
         #threejs-div {
             position: sticky;
             width: 100%;
@@ -280,6 +295,11 @@
             from {transform: scale(1); opacity: 100%;}
             to {transform: scale(1.4); opacity: 0%;}
         }
+
+        @keyframes big-pulse {
+            from {transform: scale(1); opacity: 100%;}
+            to {transform: scale(3); opacity: 0%;}
+        }
         
     </style>
 
@@ -301,14 +321,14 @@
                 <button class="circle">
                     <h3 class="unselectable">The Bedroom</h3>
                     <div class="pulser"></div>
-                    
+                    <div class="unselectable pulser" id="ux-pulser-left"></div>
                 </button>
             </div>
             <div class="hover-space" id="move-right-hover-space">
                 <button class="circle">
                     <h3 class="unselectable">The Draftroom</h3>
                     <div class="pulser"></div>
-
+                    <div class="unselectable pulser" id="ux-pulser-right"></div>
                 </button>
             </div>
             <div id="overlay">
@@ -328,6 +348,7 @@
                     <button class="circle">
                         <h3>Return</h3>
                         <div class="pulser"></div>
+                        <div class="unselectable pulser" id="ux-pulser-close"></div>
                     </button>
                 </div>
             </div>

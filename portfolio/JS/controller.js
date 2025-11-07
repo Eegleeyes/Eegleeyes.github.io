@@ -13,6 +13,10 @@ const leftButtonText = document.querySelector('#move-left-hover-space button h3'
 const rightButton = document.querySelector('#move-right-hover-space button')
 const rightButtonText = document.querySelector('#move-right-hover-space button h3')
 
+const uxPulserLeft = document.querySelector('#ux-pulser-left')
+const uxPulserRight = document.querySelector('#ux-pulser-right')
+const uxPulserClose = document.querySelector('#ux-pulser-close')
+
 const selectionSpace = document.querySelector('.selection-space')
 
 const roomTitle = document.querySelector('#room-title')
@@ -30,6 +34,7 @@ const artInfoTitle = document.querySelector('#art-information div h1')
 const artInfoText = document.querySelector('#art-information div p')
 const artImage = document.querySelector('#art-thumbnail img')
 
+const artReturnDiv = document.querySelector('#close-art-information')
 const artReturnButton = document.querySelector('#close-art-information button')
 
 const loadingdiv = document.querySelector("#loading-screen")
@@ -519,11 +524,13 @@ scene.add(transitionCircle)
 // event handlers
 function mouseoverLeft(){
     // console.log('in left')
+    if (uxPulserLeft){uxPulserLeft.remove(); uxPulserLeft = null;}
     moveCirclesLeft()
 }
 
 function mouseoverRight(){
     // console.log('in right')
+    if (uxPulserRight){uxPulserRight.remove(); uxPulserRight = null;}
     moveCirclesRight()
 }
 
@@ -685,6 +692,12 @@ function rightButtonClick(){
     })
 }
 
+let closeMouseIn = 0 // You get forced to hover over the closing div, so this delays the deletion by 2 hovers
+function deleteUXPulser(){
+    closeMouseIn++
+    if (uxPulserClose && closeMouseIn > 2){uxPulserClose.remove(); uxPulserClose = null;}
+}
+
 function windowResize(){
     cleanupForTransition()
     setupArtButtonsInCurrentScene()
@@ -701,6 +714,7 @@ rightHoverZone.addEventListener('mouseleave',mouseoutRight)
 leftButton.addEventListener('click',leftButtonClick)
 rightButton.addEventListener('click',rightButtonClick)
 
+artReturnDiv.addEventListener('mouseover',deleteUXPulser)
 artReturnButton.addEventListener('click',hideArtInformation)
 
 window.addEventListener('resize',windowResize)
